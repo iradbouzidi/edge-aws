@@ -20,6 +20,6 @@ RUN pip3 install face_recognition==1.3.0 \
 
 EXPOSE 3030
 
-ADD recognition.py /
+ADD recognition/recognition.py /
 
 CMD [ "python3", "./recognition.py" ]
