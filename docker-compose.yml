@@ -1,0 +1,28 @@
+version: '3.3'
+
+services:
+
+    front-end:
+        privileged: true
+        ports:
+            - '3001:3001'
+        volumes:
+            - '/home/pi/storage/aws:/app'
+        image: 'irad1994/front-end:aws'
+    
+    back-end:
+        privileged: true
+        ports:
+            - '5001:5001'
+        volumes:
+            - '/home/pi/storage/aws:/app'
+        image: 'irad1994/back-end:aws'
+        
+    recognition:
+        privileged: true
+        devices:
+            - '/dev/video0:/dev/video0'
+        volumes:
+            - '/home/pi/storage/aws:/app'
+        network_mode: host
+        image: 'irad1994/recognition:aws'
