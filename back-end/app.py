@@ -6,7 +6,15 @@ import psycopg2
 import cv2
 import numpy as np
 import re
-
+import time
+import awsiot.greengrasscoreipc
+import awsiot.greengrasscoreipc.client as client
+from awsiot.greengrasscoreipc.model import (
+    IoTCoreMessage,
+    SubscribeToIoTCoreRequest,
+    PublishToIoTCoreRequest,
+    QOS,
+)
 
 # Get the relativ path to this file (we will use it later)
 #FILE_PATH = "/home/pi/DOCKERS"
@@ -14,7 +22,6 @@ FILE_PATH = "/app"
 # * ---------- Create App --------- *
 app = Flask(__name__)
 CORS(app, support_credentials=True)
-
 
 
 # * ---------- DATABASE CONFIG --------- *
@@ -28,14 +35,80 @@ def DATABASE_CONNECTION():
     return psycopg2.connect(user="pcieiqtj", password="PeF3NhDl4Y_yZScwgqizlkBl0rNNxP3g", host="kashin.db.elephantsql.com", port="5432", database="pcieiqtj")
 
 
+def Publish_User(topic, message):
+    TIMEOUT = 10
+
+    ipc_client = awsiot.greengrasscoreipc.connect()
+
+    #topic = "face_recognition/camera"
+    #message = "Hello, World"
+    qos = QOS.AT_LEAST_ONCE
+
+    request = PublishToIoTCoreRequest()
+    request.topic_name = topic
+    request.payload = bytes(message, "utf-8")
+    request.qos = qos
+    operation = ipc_client.new_publish_to_iot_core()
+    operation.activate(request)
+    future = operation.get_response()
+    future.result(TIMEOUT)
+
+
+"""
+def Subscribe_User(topic):
+    TIMEOUT = 10
+
+    ipc_client = awsiot.greengrasscoreipc.connect()
+
+    class StreamHandler(client.SubscribeToIoTCoreStreamHandler):
+        def __init__(self):
+            super().__init__()
+
+        def on_stream_event(self, event: IoTCoreMessage) -> None:
+            try:
+                message = str(event.message.payload, "utf-8")
+                # Handle message.
+            except:
+                traceback.print_exc()
+
+        def on_stream_error(self, error: Exception) -> bool:
+            # Handle error.
+            # Return True to close stream, False to keep stream open.
+            return True
+
+        def on_stream_closed(self) -> None:
+            # Handle close.
+            pass
+
+    qos = QOS.AT_MOST_ONCE
+
+    request = SubscribeToIoTCoreRequest()
+    request.topic_name = topic
+    request.qos = qos
+    handler = StreamHandler()
+    operation = ipc_client.new_subscribe_to_iot_core(handler)
+    future = operation.activate(request)
+    future.result(TIMEOUT)
+
+    # Keep the main thread alive, or the process will exit.
+    while True:
+        time.sleep(10)
+
+    # To stop subscribing, close the operation stream.
+    operation.close()
+"""
 
 # * --------------------  ROUTES ------------------- *
 # * ---------- Test server ---------- *
+
+
 @app.route('/')
 def index():
     return "<html>server side is live</html>"
 
 # * ---------- Get data from the face recognition ---------- *
+
+
 @app.route('/receive_data', methods=['POST'])
 def get_receive_data():
     if request.method == 'POST':
@@ -57,28 +130,32 @@ def get_receive_data():
 
             # If use is already in the DB for today:
             if result:
-               print('user IN')
-               image_path = f"{FILE_PATH}/assets/img/{json_data['date']}/{json_data['name']}/departure.jpg"
+                print('user IN')
+                image_path = f"{FILE_PATH}/assets/img/{json_data['date']}/{json_data['name']}/departure.jpg"
 
                 # Save image
-               os.makedirs(f"{FILE_PATH}/assets/img/{json_data['date']}/{json_data['name']}", exist_ok=True)
-               cv2.imwrite(image_path, np.array(json_data['picture_array']))
-               json_data['picture_path'] = image_path
+                os.makedirs(
+                    f"{FILE_PATH}/assets/img/{json_data['date']}/{json_data['name']}", exist_ok=True)
+                cv2.imwrite(image_path, np.array(json_data['picture_array']))
+                json_data['picture_path'] = image_path
 
                 # Update user in the DB
-               update_user_querry = f"UPDATE users SET departure_time = '{json_data['hour']}', departure_picture = '{json_data['picture_path']}' WHERE name = '{json_data['name']}' AND date = '{json_data['date']}'"
-               cursor.execute(update_user_querry)
+                update_user_querry = f"UPDATE users SET departure_time = '{json_data['hour']}', departure_picture = '{json_data['picture_path']}' WHERE name = '{json_data['name']}' AND date = '{json_data['date']}'"
+                Publish_User(topic="user/leave", message=update_user_querry)
+                cursor.execute(update_user_querry)
 
             else:
                 print("user OUT")
                 # Save image
                 image_path = f"{FILE_PATH}/assets/img/history/{json_data['date']}/{json_data['name']}/arrival.jpg"
-                os.makedirs(f"{FILE_PATH}/assets/img/history/{json_data['date']}/{json_data['name']}", exist_ok=True)
+                os.makedirs(
+                    f"{FILE_PATH}/assets/img/history/{json_data['date']}/{json_data['name']}", exist_ok=True)
                 cv2.imwrite(image_path, np.array(json_data['picture_array']))
                 json_data['picture_path'] = image_path
 
                 # Create a new row for the user today:
                 insert_user_querry = f"INSERT INTO users (name, date, arrival_time, arrival_picture) VALUES ('{json_data['name']}', '{json_data['date']}', '{json_data['hour']}', '{json_data['picture_path']}')"
+                Publish_User(topic="user/arrival", message=insert_user_querry)
                 cursor.execute(insert_user_querry)
 
         except (Exception, psycopg2.DatabaseError) as error:
@@ -114,11 +191,11 @@ def get_employee(name):
 
         # if the user exist in the db:
         if result:
-            print('RESULT: ',result)
+            print('RESULT: ', result)
             # Structure the data and put the dates in string for the front
-            for k,v in enumerate(result):
+            for k, v in enumerate(result):
                 answer_to_send[k] = {}
-                for ko,vo in enumerate(result[k]):
+                for ko, vo in enumerate(result[k]):
                     answer_to_send[k][ko] = str(vo)
             print('answer_to_send: ', answer_to_send)
         else:
@@ -185,7 +262,8 @@ def add_employee():
         print(request.form['nameOfEmployee'])
 
         # Store it in the folder of the know faces:
-        file_path = os.path.join(f"{FILE_PATH}/assets/img/users/{request.form['nameOfEmployee']}.jpg")
+        file_path = os.path.join(
+            f"{FILE_PATH}/assets/img/users/{request.form['nameOfEmployee']}.jpg")
         image_file.save(file_path)
         answer = 'new employee succesfully added'
     except:
@@ -225,7 +303,6 @@ def delete_employee(name):
     return jsonify(answer)
 
 
-                                 
 # * -------------------- RUN SERVER -------------------- *
 if __name__ == '__main__':
     # * --- DEBUG MODE: --- *

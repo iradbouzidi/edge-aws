@@ -14,6 +14,7 @@ RUN pip3 install Flask==1.1.2 \
     Flask-Cors \
     psycopg2 \
     numpy \
+    awsiotsdk==1.5.17 \
     opencv-contrib-python==4.4.0.46 -i https://www.piwheels.org/simple --no-cache-dir
 
 EXPOSE 5001
