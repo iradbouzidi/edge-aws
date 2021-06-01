@@ -1,6 +1,6 @@
 ---
 RecipeFormatVersion: "2020-01-25"
-ComponentName: "com.maibornwolff.FaceRecognitionDockerComposeComponent"
+ComponentName: "com.maibornwolff.FaceRecognitionComponent"
 ComponentVersion: "1.0.0"
 ComponentType: "aws.greengrass.generic"
 ComponentDescription: "A component that uses Docker Compose to run face recognition solution on edge device RPi."
@@ -9,7 +9,7 @@ ComponentConfiguration:
   DefaultConfiguration:
     accessControl:
       aws.greengrass.ipc.mqttproxy:
-        com.maibornwolff.FaceRecognitionDockerComposeComponent:pub:1:
+        com.maibornwolff.FaceRecognitionComponent:pubsub:1:
           policyDescription: "Allows access to pub/sub to all topics."
           operations:
             - "aws.greengrass#PublishToIoTCore"
@@ -32,4 +32,4 @@ Manifests:
       - Uri: "docker:irad1994/recognition:aws"
       - Uri: "s3://mw-edgebucket/greengrassv2/docker/docker-compose.yml"
 # sudo tail -f /greengrass/v2/logs/greengrass.log
-# sudo tail -f /greengrass/v2/logs/com.maibornwolff.FaceRecognitionDockerComposeComponent.log
+# sudo tail -f /greengrass/v2/logs/com.maibornwolff.FaceRecognitionComponent.log
