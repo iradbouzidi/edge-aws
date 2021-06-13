@@ -109,7 +109,7 @@ def Subscribe_User(topic):
 
 @app.route('/')
 def index():
-    return "<html>server side is live</html>"
+    return "<html>AWS server side is live</html>"
 
 # * ---------- Get data from the face recognition ---------- *
 
