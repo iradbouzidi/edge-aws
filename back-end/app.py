@@ -35,19 +35,13 @@ def DATABASE_CONNECTION():
     return psycopg2.connect(user="pcieiqtj", password="PeF3NhDl4Y_yZScwgqizlkBl0rNNxP3g", host="kashin.db.elephantsql.com", port="5432", database="pcieiqtj")
 
 
-def Publish_User(topic):
+def Publish_User(topic, message):
     TIMEOUT = 10
 
     ipc_client = awsiot.greengrasscoreipc.connect()
 
     #topic = "face_recognition/camera"
-    name = "irad"
     qos = QOS.AT_LEAST_ONCE
-
-    jsonstring = {
-        "name": name
-    }
-    message = json.dumps(jsonstring)
 
     request = PublishToIoTCoreRequest()
     request.topic_name = topic
@@ -149,7 +143,13 @@ def get_receive_data():
                 cursor.execute(update_user_querry)
 
                 # Publish user leave
-                Publish_User(topic="user/leave")
+                user_data = {
+                    "name": {json_data['name']},
+                    "date": {json_data['date']},
+                    "departure_time": {json_data['hour']}
+                }
+                user_data = json.dumps(user_data)
+                Publish_User(topic="user/leave", message=user_data)
 
             else:
                 print("user OUT")
@@ -165,7 +165,13 @@ def get_receive_data():
                 cursor.execute(insert_user_querry)
 
                 # Publish user arrival
-                Publish_User(topic="user/arrival")
+                user_data = {
+                    "name": {json_data['name']},
+                    "date": {json_data['date']},
+                    "arrival_time": {json_data['hour']}
+                }
+                user_data = json.dumps(user_data)
+                Publish_User(topic="user/arrival", message=user_data)
 
         except (Exception, psycopg2.DatabaseError) as error:
             print("ERROR DB: ", error)
