@@ -15,6 +15,7 @@ from awsiot.greengrasscoreipc.model import (
     QOS,
 )
 import json
+import time
 
 # Get the relativ path to this file (we will use it later)
 #FILE_PATH = "/home/pi/DOCKERS"
@@ -50,6 +51,7 @@ def Publish_User(topic, message):
     operation.activate(request)
     future = operation.get_response()
     future.result(TIMEOUT)
+    time.sleep(3)
 
 
 """
