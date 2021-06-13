@@ -142,12 +142,12 @@ def get_receive_data():
                 cursor.execute(update_user_querry)
 
                 # Publish user leave
-                user_data = {
-                    "name": {json_data['name']},
-                    "date": {json_data['date']},
-                    "departure_time": {json_data['hour']}
+                data = {
+                    "name": f"{json_data['name']}",
+                    "date": f"{json_data['date']}",
+                    "departure_time": f"{json_data['hour']}"
                 }
-                user_data = json.dumps(user_data)
+                user_data = json.dumps(data)
                 Publish_User(topic="user/leave", message=user_data)
 
             else:
@@ -164,12 +164,12 @@ def get_receive_data():
                 cursor.execute(insert_user_querry)
 
                 # Publish user arrival
-                user_data = {
-                    "name": {json_data['name']},
-                    "date": {json_data['date']},
-                    "arrival_time": {json_data['hour']}
+                data = {
+                    "name": f"{json_data['name']}",
+                    "date": f"{json_data['date']}",
+                    "arrival_time": f"{json_data['hour']}"
                 }
-                user_data = json.dumps(user_data)
+                user_data = json.dumps(data)
                 Publish_User(topic="user/arrival", message=user_data)
 
         except (Exception, psycopg2.DatabaseError) as error:
