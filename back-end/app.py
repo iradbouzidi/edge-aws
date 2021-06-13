@@ -1,11 +1,15 @@
 # * ---------- IMPORTS --------- *
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
+
 import os
 import psycopg2
 import cv2
 import numpy as np
 import re
+import json
+import time
+
 import awsiot.greengrasscoreipc
 import awsiot.greengrasscoreipc.client as client
 from awsiot.greengrasscoreipc.model import (
@@ -14,8 +18,7 @@ from awsiot.greengrasscoreipc.model import (
     PublishToIoTCoreRequest,
     QOS,
 )
-import json
-import time
+
 
 # Get the relativ path to this file (we will use it later)
 FILE_PATH = "/app"
