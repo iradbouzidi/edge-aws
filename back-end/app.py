@@ -40,7 +40,6 @@ def Publish_User(topic, message):
 
     ipc_client = awsiot.greengrasscoreipc.connect()
 
-    #topic = "face_recognition/camera"
     qos = QOS.AT_LEAST_ONCE
 
     request = PublishToIoTCoreRequest()
