@@ -6,7 +6,6 @@ import psycopg2
 import cv2
 import numpy as np
 import re
-import time
 import awsiot.greengrasscoreipc
 import awsiot.greengrasscoreipc.client as client
 from awsiot.greengrasscoreipc.model import (
@@ -15,6 +14,7 @@ from awsiot.greengrasscoreipc.model import (
     PublishToIoTCoreRequest,
     QOS,
 )
+import json
 
 # Get the relativ path to this file (we will use it later)
 #FILE_PATH = "/home/pi/DOCKERS"
@@ -35,14 +35,19 @@ def DATABASE_CONNECTION():
     return psycopg2.connect(user="pcieiqtj", password="PeF3NhDl4Y_yZScwgqizlkBl0rNNxP3g", host="kashin.db.elephantsql.com", port="5432", database="pcieiqtj")
 
 
-def Publish_User(topic, message):
+def Publish_User(topic):
     TIMEOUT = 10
 
     ipc_client = awsiot.greengrasscoreipc.connect()
 
     #topic = "face_recognition/camera"
-    #message = "Hello, World"
+    name = "irad"
     qos = QOS.AT_LEAST_ONCE
+
+    jsonstring = {
+        "name": name
+    }
+    message = json.dumps(jsonstring)
 
     request = PublishToIoTCoreRequest()
     request.topic_name = topic
@@ -141,8 +146,10 @@ def get_receive_data():
 
                 # Update user in the DB
                 update_user_querry = f"UPDATE users SET departure_time = '{json_data['hour']}', departure_picture = '{json_data['picture_path']}' WHERE name = '{json_data['name']}' AND date = '{json_data['date']}'"
-                Publish_User(topic="user/leave", message=update_user_querry)
                 cursor.execute(update_user_querry)
+
+                # Publish user leave
+                Publish_User(topic="user/leave")
 
             else:
                 print("user OUT")
@@ -155,8 +162,10 @@ def get_receive_data():
 
                 # Create a new row for the user today:
                 insert_user_querry = f"INSERT INTO users (name, date, arrival_time, arrival_picture) VALUES ('{json_data['name']}', '{json_data['date']}', '{json_data['hour']}', '{json_data['picture_path']}')"
-                Publish_User(topic="user/arrival", message=insert_user_querry)
                 cursor.execute(insert_user_querry)
+
+                # Publish user arrival
+                Publish_User(topic="user/arrival")
 
         except (Exception, psycopg2.DatabaseError) as error:
             print("ERROR DB: ", error)

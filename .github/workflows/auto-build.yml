@@ -2,7 +2,7 @@ name: Auto Build for AWS
 
 on:
   push:
-    branches: master
+    branches: test
 
 jobs:
   back-end-aws:
