@@ -18,7 +18,6 @@ import json
 import time
 
 # Get the relativ path to this file (we will use it later)
-#FILE_PATH = "/home/pi/DOCKERS"
 FILE_PATH = "/app"
 # * ---------- Create App --------- *
 app = Flask(__name__)
