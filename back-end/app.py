@@ -102,15 +102,11 @@ def Subscribe_User(topic):
 
 # * --------------------  ROUTES ------------------- *
 # * ---------- Test server ---------- *
-
-
 @app.route('/')
 def index():
     return "<html>AWS server side is live</html>"
 
 # * ---------- Get data from the face recognition ---------- *
-
-
 @app.route('/receive_data', methods=['POST'])
 def get_receive_data():
     if request.method == 'POST':
