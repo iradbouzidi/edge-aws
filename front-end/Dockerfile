@@ -1,5 +1,5 @@
 # pull official base image
-FROM arm32v7/node:buster-slim
+FROM arm32v7/node:16-buster-slim
 
 # set working directory
 WORKDIR /usr/src/app
