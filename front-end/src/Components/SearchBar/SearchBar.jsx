@@ -97,7 +97,7 @@ const SearchBar = (props) => {
           <SearchInput
             name="searchForEmployee"
             id="searchForEmployee"
-            placeholder="Jonh Doe"
+            placeholder="Type Employee Name Here..."
             type="text"
           />
           <SearchButton onClick={searchForEmployee} id="searchButton">

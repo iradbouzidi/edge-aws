@@ -18,25 +18,20 @@ const SearchBarResult = (props) => {
   const UlList = styled.ul`
     min-width: 100%;
   `;
-  const ImageHere = props.result[2];
 
   return (
     <OneResult>
       <UlList>
         <ListItem>{props.result[1]}</ListItem>
         <ListItem>{props.result[2]}</ListItem>
-        <ListItem>
-          <img
-            src={props.result[2]}
-            alt=""
-            width={200}
-            height={200}
-          ></img>
-        </ListItem>
         <ListItem>{props.result[3]}</ListItem>
         <ListItem>{props.result[4]}</ListItem>
         <ListItem>{props.result[5]}</ListItem>
         <ListItem>{props.result[6]}</ListItem>
+        <ListItem>{props.result[7]}</ListItem>
+        <ListItem>{props.result[8]}</ListItem>
+
+  
         {/*<ListItem><b>Date:</b> <i>{ props.result[2] } </i></ListItem>
                     <ListItem><b>Name:</b> <i>{ props.result[2] } </i></ListItem>
                     <ListItem><b>Arrival time:</b> <i>{ props.result[3] } </i></ListItem>

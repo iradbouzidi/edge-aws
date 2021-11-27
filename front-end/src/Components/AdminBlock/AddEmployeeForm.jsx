@@ -78,7 +78,7 @@ const AddEmployeeForm = props => {
         <section>
             <H3AddEmployee>Add an employee</H3AddEmployee>
             <AddEmployeeForm>
-                <AddEmployeeInputText id="nameOfEmployee" name="name" placeholder='John Doe' type="text" />
+                <AddEmployeeInputText id="nameOfEmployee" name="name" placeholder='Type Employee Name Here...' type="text" />
                 <AddEmployeeInput type="file" alt="employee" id='employeePictureToSend' name='employeePictureToSend' />
                 <AddEmployeeButton onClick={ addEmployeeToDb }>Add</AddEmployeeButton>
                 { isUserWellAdded && <SuccessAddUser>User well added to the Database!</SuccessAddUser> }
