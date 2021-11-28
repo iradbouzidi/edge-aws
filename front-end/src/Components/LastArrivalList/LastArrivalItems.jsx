@@ -25,22 +25,12 @@ const LastArrivalItems = props => {
     return (
             <OneResult>
                 <UlList>
-                    {/*<ListItem><b>Date:</b> <i>{ props.result[1] } </i></ListItem>
-                    <ListItem><b>Name:</b> <i>{ props.result[2] } </i></ListItem>
-                    <ListItem><b>Arrival time:</b> <i>{ props.result[3] } </i></ListItem>
-                    <ListItem><b>Arrival time:</b> <i>{ props.result[3] } </i></ListItem>
-                    <ListItem><b>Departure time:</b> <i>{ props.result[5] } </i></ListItem>
-                    <ListItem><b>Is late: </b> <i>{ props.result[6] ? 'Yes' : 'No' } </i></ListItem>
-    <ListItem><b>Has left early:</b>  <i>{ props.result[7] ? 'Yes' : 'No' } </i></ListItem>*/}
-                    <i>{ props.result[1] } </i>
-                    <i>{ props.result[2] } </i>
-                    <i>{ props.result[3] } </i>
-                    <i>{ props.result[4] } </i>
-                    <i>{ props.result[5] } </i>
-                    <i>{ props.result[6] } </i>
-                    <i>{ props.result[7] } </i>
-                    <i>{ props.result[8] } </i>
-
+                    <ListItem><b>Name:</b> <i>{ props.result[1] } </i></ListItem>
+                    <ListItem><b>Date:</b> <i>{ props.result[2] } </i></ListItem>
+                    <ListItem><b>Arrival Time:</b> <i>{ props.result[3] } </i></ListItem>
+                    <ListItem><b>Departure Time:</b> <i>{ props.result[4] } </i></ListItem>
+                    <ListItem><b>Arrival Picture Path:</b> <i>{ props.result[5] } </i></ListItem>
+                    <ListItem><b>Departure Picture Path:</b> <i>{ props.result[6] } </i></ListItem>
                 </UlList>
             </OneResult>
     );

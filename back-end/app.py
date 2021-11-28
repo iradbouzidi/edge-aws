@@ -145,7 +145,8 @@ def get_receive_data():
                 data = {
                     "name": f"{json_data['name']}",
                     "date": f"{json_data['date']}",
-                    "departure_time": f"{json_data['hour']}"
+                    "departure_time": f"{json_data['hour']}",
+                    "picture_path": f"{json_data['picture_path']}"
                 }
                 user_data = json.dumps(data)
                 Publish_User(topic="user/leave", message=user_data)
@@ -167,7 +168,8 @@ def get_receive_data():
                 data = {
                     "name": f"{json_data['name']}",
                     "date": f"{json_data['date']}",
-                    "arrival_time": f"{json_data['hour']}"
+                    "arrival_time": f"{json_data['hour']}",
+                    "picture_path": f"{json_data['picture_path']}"
                 }
                 user_data = json.dumps(data)
                 Publish_User(topic="user/arrival", message=user_data)
